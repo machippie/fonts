@@ -13,7 +13,7 @@
       loop: "{{ fonts_taps }}"
       ignore_errors: True
       homebrew_tap:
-        tap: "{{ item.name }}"
+        tap: "{{ item }}"
         state: present
       tags:
         - fonts
@@ -22,7 +22,7 @@
       loop: "{{ fonts_casks }}"
       ignore_errors: True
       homebrew_cask:
-        name: fonts
+        name: "{{ item }}"
         greedy: True
         options: appdir=/Applications
         accept_external_apps: False
