@@ -1,0 +1,33 @@
+# Standards: 0.1
+---
+- name: Fact fonts user
+  set_fact:
+    fonts_user: "{{ fonts_user | default(homebrew_user) | default(ansible_user_id) }}"
+  tags:
+    - fonts
+
+- become: "{{ (fonts_user != ansible_user_id) | bool }}"
+  become_user: "{{ fonts_user }}"
+  block:
+    - name: Install required taps
+      loop: "{{ fonts_taps }}"
+      ignore_errors: True
+      homebrew_tap:
+        tap: "{{ item.name }}"
+        state: present
+      tags:
+        - fonts
+
+    - name: Install required package
+      loop: "{{ fonts_casks }}"
+      ignore_errors: True
+      homebrew_cask:
+        name: fonts
+        greedy: True
+        options: appdir=/Applications
+        accept_external_apps: False
+        state: upgraded
+      tags:
+        - fonts
+
+...
